@@ -1,0 +1,38 @@
+{
+  "name": "Laravel Bun Dev",
+  "dockerFile": "Dockerfile",
+  "forwardPorts": [8000, 3000, 5173],
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "onecentlin.laravel-blade",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "xdebug.php-debug",
+        "mehedidracula.php-namespace-resolver",
+        "oven.bun-vscode",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-sqlite",
+        "Vue.volar",
+        "sdras.vue-vscode-snippets",
+        "codingyu.laravel-goto-view",
+        "naoray.laravel-goto-components",
+        "pgl.laravel-jump-controller"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "php.validate.enable": true,
+        "php.suggest.basic": false
+      }
+    }
+  },
+  "postCreateCommand": "composer install && bun install",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:./vendor/bin"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  }
+}

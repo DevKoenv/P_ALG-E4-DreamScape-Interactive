@@ -1,0 +1,57 @@
+name: linter
+
+on:
+  push:
+    branches:
+      - master
+      - test
+  pull_request:
+    branches:
+      - master
+      - test
+  pull_request_review:
+    types: [submitted]
+    branches:
+      - master
+      - test
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+        
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install Dependencies
+        run: |
+          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+          bun install
+
+      - name: Run Pint
+        run: vendor/bin/pint
+
+      - name: Format Frontend
+        run: bun run format
+
+      - name: Lint Frontend
+        run: bun run lint
+
+      - name: Commit Changes
+        if: github.event_name == 'pull_request_review' && github.event.review.state == 'approved'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: fix code style
+          commit_options: '--no-verify'
